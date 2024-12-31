@@ -8,6 +8,7 @@ function App() {
   console.log("userPrompt:", userPrompt)
 
   const handleBotResponse = async (prompt) => {
+    setUserPrompt("")
     setBotResponse("Generating response...")
     const apiKey = import.meta.env['VITE_GROQ_API_KEY']
     const groq = new Groq({
@@ -29,11 +30,18 @@ function App() {
     setBotResponse(response)
   }
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      handleBotResponse(userPrompt)
+    }
+  }
+
   return (
     <>
       <h1 id="title">ChatBot</h1>
       <div id="input-area">
-        <textarea rows={10} cols={50} placeholder="Enter prompt" value={userPrompt} onChange={e => setUserPrompt(e.target.value)} />
+        <textarea rows={10} cols={50} placeholder="Enter prompt" value={userPrompt} onChange={e => setUserPrompt(e.target.value)} onKeyDown={handleKeyDown} />
         <button onClick={async () => await handleBotResponse(userPrompt)}>Submit</button>
       </div>
       <hr></hr>
@@ -43,3 +51,4 @@ function App() {
 }
 
 export default App
+
