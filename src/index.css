@@ -41,5 +41,10 @@ body {
   text-align: center;
   width: 75%;
   margin: auto;
-  padding: 5rem;
+}
+
+hr {
+  border: 0.2rem solid white;
+  width: 100%;
+  margin: 0;
 }
