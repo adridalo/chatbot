@@ -3,12 +3,11 @@ import { useState } from "react"
 
 function App() {
   const [userPrompt, setUserPrompt] = useState("");
-  const [botResponse, setBotResponse] = useState("Enter a prompt to get started...");
-
-  console.log("userPrompt:", userPrompt)
+  const [botResponse, setBotResponse] = useState(localStorage.getItem("botResponse") !== null ? localStorage.getItem("botResponse") : "Enter a prompt to get started...");
 
   const handleBotResponse = async (prompt) => {
     setUserPrompt("")
+    document.getElementById("input-area").blur()
     setBotResponse("Generating response...")
     const apiKey = import.meta.env['VITE_GROQ_API_KEY']
     const groq = new Groq({
@@ -26,26 +25,19 @@ function App() {
     })
 
     const response = chatCompletion.choices[0].message.content
-    console.log(response)
     setBotResponse(response)
-  }
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      handleBotResponse(userPrompt)
-    }
+    localStorage.setItem("botResponse", response)
   }
 
   return (
     <>
       <h1 id="title">ChatBot</h1>
       <div id="input-area">
-        <textarea rows={10} cols={50} placeholder="Enter prompt" value={userPrompt} onChange={e => setUserPrompt(e.target.value)} onKeyDown={handleKeyDown} />
+        <textarea id="input-area" rows={10} cols={50} placeholder="Enter prompt" value={userPrompt} onChange={e => setUserPrompt(e.target.value)} />
         <button onClick={async () => await handleBotResponse(userPrompt)}>Submit</button>
       </div>
       <hr></hr>
-      <p id="bot-response"><pre>{botResponse}</pre></p>
+      <div id="bot-response"><pre>{botResponse}</pre></div>
     </>
   )
 }
